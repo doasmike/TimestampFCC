@@ -28,28 +28,23 @@ app.get("/api/:param1?", function (req, res) {
     return;
   }
 
-  // Attempt to parse the date using various formats
+
   let date;
   if (/[0-9]{5}/.test(param1)) {
     // Unix timestamp
-    date = new Date(parseInt(param1));
-  } else if (/[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(param1)) {
-    // YYYY-MM-DD format
-    date = new Date(param1);
-  } else if (/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z/.test(param1)) {
-    // ISO 8601 format
-    date = new Date(param1);
+    date = parseInt(param1);
+    res.json({ unix: date, utc: new Date(date).toUTCString() });
   } else {
     // Handle invalid date input
-    res.json({ error: "Invalid Date" });
-    return;
-  }
 
-  // Check if the parsed date is valid
-  if (isNaN(date.getTime())) {
-    res.json({ error: "Invalid Date" });
-  } else {
-    res.json({ unix: date.getTime(), utc: date.toUTCString() });
+    date = new Date(param1);
+    // Check if the parsed date is valid
+    if (date.toString() === "Invalid Date") {
+      res.json({ error: "Invalid Date" });
+    } else {
+      res.json({ unix: date.valueOf(), utc: date.toUTCString() });
+    }
+
   }
 });
 
