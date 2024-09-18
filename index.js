@@ -18,6 +18,16 @@ app.get("/", function (req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+app.get("/api/:param1", function (req, res) {
+  let param1 = req.params.param1;
+  console.log(param1);
+  if (/[0-9]{5}/.test(param1))
+    {
+      param1 = parseInt(param1);
+    }
+  let date = new Date(param1);
+  res.json({"unix": date.valueOf(),"utc": date.toUTCString()})
+})
 
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
